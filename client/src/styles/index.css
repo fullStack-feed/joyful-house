@@ -1,0 +1,654 @@
+@import "~antd/dist/antd.css";
+@import url(https://fonts.googleapis.com/css?family=Sacramento);
+.menu {
+  width: 100%;
+  padding: 0 20px;
+  line-height: 63px;
+  border: 0;
+}
+@media (max-width: 48em) {
+  .menu {
+    padding: 0;
+  }
+}
+.app-header {
+  display: flex;
+  background: #fff;
+  box-shadow: 0 2px 8px #f0f1f2;
+  padding: 0;
+}
+.app-header__logo-search-section {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
+.app-header__logo {
+  display: inline-block;
+  padding: 0 20px;
+}
+.app-header__logo img {
+  width: 36px;
+}
+.app-header__search-input {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  padding-right: 10px;
+}
+.app-header__search-input .ant-input-group {
+  border: 0;
+  width: 100%;
+  max-width: 460px;
+}
+.app-header__search-input .ant-input-group input {
+  border: 1px solid #f0f1f2;
+  box-shadow: 0 2px 4px rgba(29, 34, 108, 0.1);
+}
+.app-header__menu-section {
+  float: right;
+}
+.app-header-skeleton {
+  display: flex;
+  background: #fff;
+  box-shadow: 0 2px 8px #f0f1f2;
+  padding: 0;
+}
+.app-header-skeleton__search-section {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
+.app-header-skeleton__logo {
+  padding: 0 20px;
+}
+.app-header-skeleton__logo img {
+  width: 55px;
+}
+.app-header-skeleton__search-input {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  padding-right: 10px;
+}
+.app-header-skeleton__search-input .ant-input-group {
+  border: 0;
+  width: 100%;
+  max-width: 460px;
+}
+.app-header-skeleton__search-input .ant-input-group input {
+  border: 1px solid #f0f1f2;
+  box-shadow: 0 2px 4px rgba(29, 34, 108, 0.1);
+}
+.error-banner {
+  position: fixed;
+  width: 100%;
+  top: 64px;
+  left: 0;
+  z-index: 99;
+}
+.listing-card__cover-img {
+  width: 100%;
+  height: 195px;
+  background-size: cover;
+  background-position: 50%;
+}
+.listing-card__rating-tag {
+  position: absolute;
+  top: 5px;
+  right: 0;
+}
+.listing-card__description {
+  padding-bottom: 20px;
+}
+.listing-card__price.ant-typography {
+  color: #1d226c;
+}
+.listing-card__price.ant-typography span {
+  color: #bfbfbf;
+  font-weight: 400;
+}
+.listing-card__title.ant-typography,
+.listing-card__address.ant-typography {
+  display: block;
+}
+.listing-card__dimensions i,
+.listing-card__dimensions span {
+  padding-right: 10px;
+  font-size: 13px;
+}
+.listing-card__dimensions span {
+  color: #bfbfbf;
+}
+.listing-card__dimensions--guests {
+  float: right;
+}
+.listing-card__dimensions--guests span {
+  padding-right: 0;
+}
+@media (max-width: 75em) {
+  .listing-card__dimensions--guests {
+    float: none;
+    padding-bottom: 5px;
+  }
+}
+@media (max-width: 48em) {
+  .listing-card__dimensions--guests {
+    float: right;
+    padding-bottom: 0;
+  }
+}
+.home-hero,
+.page-skeleton__paragraph {
+  padding-bottom: 40px;
+}
+.home-hero {
+  width: 100%;
+}
+.home-hero__search {
+  max-width: 600px;
+}
+.home-hero__title.ant-typography {
+  color: #1d226c;
+}
+.home-hero__search-input input {
+  border: 1px solid #f0f1f2;
+  box-shadow: 0 2px 4px rgba(29, 34, 108, 0.1);
+}
+.home-hero__cards {
+  padding-top: 60px;
+}
+.home-hero__cards .ant-card {
+  background: transparent;
+  cursor: pointer;
+}
+.home-hero__cards .ant-card-cover:before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1d226c;
+  opacity: 0.5;
+  -webkit-transition: all 0.3s linear;
+  transition: all 0.3s linear;
+}
+.home-hero__cards .ant-card-cover:hover:before {
+  background: none;
+}
+.home-hero__cards .ant-card-body {
+  padding-top: 0;
+  padding-bottom: 0;
+  height: 0;
+  color: #fff;
+  font-weight: 700;
+  position: relative;
+  bottom: 40px;
+}
+.home-listings {
+  padding: 40px 0 20px;
+}
+.home-listings__title.ant-typography {
+  color: #1d226c;
+  display: inline-block;
+}
+.home-listings-skeleton {
+  padding: 40px 0 20px;
+}
+.home-listings-skeleton__card {
+  margin: 5px 0;
+}
+.home-listings-skeleton__card-cover-img {
+  width: 100%;
+  height: 195px;
+}
+.home {
+  padding: 60px 120px;
+  background-image: url(/static/media/map-background.c21df147.jpg);
+  background-repeat: no-repeat;
+  background-position: 10% 0;
+}
+@media (max-width: 75em) {
+  .home {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+.home__cta-section {
+  padding: 40px 0;
+  max-width: 700px;
+  text-align: center;
+  margin: 0 auto;
+}
+.home__cta-section-title.ant-typography {
+  color: #1d226c;
+}
+.home__cta-section-button {
+  margin-top: 20px;
+}
+.home__listings {
+  padding: 40px 0 20px;
+}
+.home__listings-title.ant-typography {
+  color: #1d226c;
+  display: inline-block;
+}
+.home__listings-img-cover {
+  width: 100%;
+  cursor: pointer;
+}
+@media (max-width: 36em) {
+  .home__listings-img-cover {
+    padding: 10px 0;
+  }
+}
+.home__listings-img {
+  width: 100%;
+}
+.host-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 100px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+@media (max-width: 62em) {
+  .host-content {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+.host__form-header {
+  padding-bottom: 20px;
+}
+
+.host__form-title.ant-typography {
+  color: #1d226c;
+  margin-bottom: 5px;
+}
+
+.host__form-image-upload img {
+  width: 125px;
+}
+.listing-bookings h3.ant-typography,
+.listing-bookings h4.ant-typography {
+  color: #1d226c;
+}
+.listing-bookings__section {
+  font-size: 15px;
+  padding: 5px 0;
+}
+.listing-bookings__item {
+  margin: 20px 0;
+}
+.listing-bookings__history {
+  margin-bottom: 20px;
+}
+.listing-bookings__history > div {
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+.listing-bookings__stars {
+  font-size: 13px;
+}
+.listing-booking {
+  max-width: 400px;
+  margin: 0 auto;
+  display: block;
+}
+@media (max-width: 62em) {
+  .listing-booking {
+    padding-top: 40px;
+  }
+}
+.listing-booking__card-title.ant-typography {
+  color: #1d226c;
+  margin-bottom: 5px;
+}
+.listing-booking__card-title.ant-typography span {
+  color: #bfbfbf;
+  font-weight: 400;
+}
+.listing-booking__card {
+  width: 100%;
+  text-align: center;
+}
+.listing-booking__card-date-picker {
+  padding-bottom: 20px;
+}
+.listing-booking__card-cta {
+  display: block;
+  margin: 0 auto 10px;
+}
+.ant-calendar-date__check-in {
+  border: 1px solid #1890ff;
+  border-radius: 50%;
+}
+.ant-calendar-footer-text {
+  font-size: 11px;
+  line-height: 20px;
+  padding: 10px;
+  display: block;
+}
+.listing-booking-modal {
+  text-align: center;
+  padding-top: 10px;
+}
+.listing-booking-modal__intro-title.ant-typography,
+.listing-booking-modal__intro-title.ant-typography + h3.ant-typography {
+  margin-top: 5px;
+}
+.listing-booking-modal__charge-summary-total {
+  font-weight: 700;
+  font-size: 15px;
+}
+.listing-booking-modal__charge-summary-stripe {
+  display: block;
+  font-size: 11px;
+  padding-top: 5px;
+}
+.listing-booking-modal__stripe-card-section {
+  padding-bottom: 10px;
+}
+.listing-booking-modal__stripe-card {
+  padding: 10px;
+  margin: 40px 0;
+  border: 1px solid #f0f1f2;
+  box-shadow: 0 2px 4px rgba(29, 34, 108, 0.1);
+}
+.listing-booking-modal__cta {
+  width: 100px;
+}
+.listing-details h3.ant-typography,
+.listing-details h4.ant-typography {
+  color: #1d226c;
+}
+.listing-details__image {
+  width: 100%;
+  height: 570px;
+  background-size: cover;
+  background-position: 50%;
+  margin-bottom: 20px;
+}
+@media (max-width: 75em) {
+  .listing-details__image {
+    height: 380px;
+  }
+}
+.listing-details__title.ant-typography {
+  margin-top: 5px !important;
+  margin-bottom: 5px;
+}
+.listing-details__title.ant-typography span {
+  color: #bfbfbf;
+  font-weight: 400;
+}
+.listing-details__city-address.ant-typography,
+.listing-details__ratings.ant-typography {
+  margin: 5px 0;
+}
+.listing-details__ratings.ant-typography {
+  font-size: 13px;
+}
+.listing-details__host-name {
+  font-family: Sacramento, cursive;
+  display: inline-block;
+  padding-left: 10px;
+  position: relative;
+  top: 5px;
+}
+.listing-details__section {
+  font-size: 15px;
+  padding: 5px 0;
+}
+.listing-details__about-items {
+  padding-bottom: 20px;
+}
+.listing-details__amenities-row {
+  padding: 5px 0;
+}
+.listing-details__amenities-row i,
+.listing-details__amenities-row span {
+  padding: 0 2.5px;
+}
+.listing-details__booking-item {
+  margin: 20px 0;
+}
+.listing-details__booking-history {
+  margin-bottom: 20px;
+}
+.listing-details__booking-history > div {
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+.listing-details__booking-stars {
+  font-size: 13px;
+}
+.listing {
+  padding: 60px 120px;
+}
+@media (max-width: 75em) {
+  .listing {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+.listings-filters {
+  padding: 10px 0;
+  background: #fff;
+}
+.listings-filters .ant-select-selection--single .ant-select-selection__rendered {
+  margin-right: 30px;
+}
+.listings-filters span {
+  padding-right: 5px;
+}
+.listings-pagination {
+  padding: 10px 0;
+  float: right;
+}
+@media (max-width: 48em) {
+  .listings-pagination {
+    float: none;
+  }
+}
+.listings-skeleton__card {
+  margin: 5px 0;
+}
+.listings-skeleton__card-cover-img {
+  width: 100%;
+  height: 195px;
+}
+.listings {
+  padding: 60px 120px;
+}
+@media (max-width: 75em) {
+  .listings {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+.listings--none .ant-typography {
+  font-size: 15px;
+}
+.listings__affix {
+  background: #fff;
+  padding: 10px 0;
+}
+.listings__title.ant-typography {
+  color: #1d226c;
+}
+.log-in {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.log-in-card {
+  width: 450px;
+  text-align: center;
+  padding: 10px 0 20px;
+}
+.log-in-card__intro-title.ant-typography,
+.log-in-card__intro-title.ant-typography + h3.ant-typography {
+  margin-top: 5px;
+}
+.log-in-card__google-button {
+  margin: 40px auto;
+  border-radius: 2px;
+  background-color: #4285f4;
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.24), 0 0 1px 0 rgba(0, 0, 0, 0.12);
+  border: none;
+  display: flex;
+  align-items: center;
+  padding: 1px;
+  color: #fff;
+  cursor: pointer;
+}
+.log-in-card__google-button:hover {
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
+}
+.log-in-card__google-button:active {
+  background: #3367d6;
+}
+.log-in-card__google-button-logo {
+  height: 43px;
+}
+.log-in-card__google-button-text {
+  text-align: left;
+  white-space: nowrap;
+  padding: 10px;
+}
+.not-found {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.not-found__description-title.ant-typography {
+  display: block;
+  padding-bottom: 10px;
+  color: #1d226c;
+  font-size: 22px;
+  font-weight: 700;
+}
+.not-found__description-subtitle.ant-typography {
+  color: #1d226c;
+  font-size: 16px;
+}
+.not-found__cta {
+  margin-top: 20px;
+}
+.stripe {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.user-bookings {
+  padding-top: 40px;
+}
+.user-bookings__title.ant-typography {
+  color: #1d226c;
+  display: inline-block;
+}
+.user-bookings__description.ant-typography {
+  font-size: 15px;
+}
+.user-bookings .ant-list-pagination {
+  padding-bottom: 20px;
+}
+.user-bookings__booking-item {
+  margin: 20px 0;
+}
+.user-bookings__booking-history {
+  margin-bottom: 20px;
+}
+.user-bookings__booking-history > div {
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+.user-bookings__booking-stars {
+  font-size: 13px;
+}
+.user-listings {
+  padding-top: 40px;
+}
+.user-listings__title.ant-typography {
+  color: #1d226c;
+  display: inline-block;
+}
+.user-listings .ant-list-pagination {
+  padding-bottom: 20px;
+}
+.user-listings__description.ant-typography {
+  font-size: 15px;
+}
+.user-profile {
+  max-width: 400px;
+  margin: 0 auto;
+  display: block;
+}
+.user-profile__card {
+  width: 100%;
+}
+.user-profile__avatar {
+  text-align: center;
+}
+.user-profile__details h4.ant-typography {
+  color: #1d226c;
+}
+.user-profile__details div.ant-typography {
+  font-size: 15px;
+}
+.user-profile__details-cta {
+  margin-bottom: 20px;
+}
+.user {
+  padding: 60px 120px;
+}
+@media (max-width: 75em) {
+  .user {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+html {
+  overflow: auto;
+}
+#root,
+body,
+html {
+  height: 100%;
+  width: 100%;
+}
+#app {
+  position: relative;
+  background: #fff;
+  min-height: 100vh;
+}
+.app-skeleton {
+  height: 100%;
+  background: #fff;
+  display: flex;
+}
+.app-skeleton__spin-section {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.app__affix-header {
+  z-index: 99;
+}
+.app__affix-footer {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+@media (max-width: 36em) {
+  .app__affix-footer {
+    display: none;
+  }
+}
