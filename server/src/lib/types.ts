@@ -74,7 +74,7 @@ export interface Listing {
  * listings： 一个用户可以拥有多个民宿进行出售
  */
 export interface User {
-  _id: ObjectId;
+  _id: string;
   token: string;
   name: string;
   avatar: string;
