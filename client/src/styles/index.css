@@ -439,7 +439,9 @@
   padding: 10px 0;
   background: #fff;
 }
-.listings-filters .ant-select-selection--single .ant-select-selection__rendered {
+.listings-filters
+  .ant-select-selection--single
+  .ant-select-selection__rendered {
   margin-right: 30px;
 }
 .listings-filters span {
