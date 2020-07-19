@@ -4,13 +4,17 @@ import express, { Application } from "express";
 import { ApolloServer } from "apollo-server-express";
 import { connectDatabase } from "./database";
 import { typeDefs, resolvers } from "./graphql";
+import cookieParser from "cookie-parser";
 
 const mount = async (app: Application) => {
   const db = await connectDatabase();
+  // 处理cookie 持久化登录的中间件
+  app.use(cookieParser(process.env.SECRET));
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-    context: () => ({ db }),
+    // PUZZ: 纳闷，这里的res 和 req怎么传过来的呢？
+    context: ({ res, req }) => ({ db, res, req }),
   });
 
   server.applyMiddleware({ app, path: "/api" });
