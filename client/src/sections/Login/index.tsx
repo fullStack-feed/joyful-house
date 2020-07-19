@@ -1,33 +1,31 @@
 import React, { useEffect, useRef } from "react";
+import { Redirect } from "react-router-dom";
 import { Card, Layout, Typography, Spin } from "antd";
-import googleLogo from "./assets/google_logo.jpg";
-import { Viewer } from "../../lib/types";
 import { useApolloClient, useMutation } from "@apollo/react-hooks";
-import { AUTH_URL } from "../../lib/graphql/queries";
-import { AuthUrl as AuthUrlData } from "../../lib/graphql/queries/AuthUrl/__generated__/AuthUrl";
-import { LOG_IN } from "../../lib/graphql/mutations";
-import { ErrorBanner } from "../../lib/components";
 import {
   LogIn as LogInData,
   LogInVariables,
 } from "../../lib/graphql/mutations/LogIn/__generated__/LogIn";
+import { AuthUrl as AuthUrlData } from "../../lib/graphql/queries/AuthUrl/__generated__/AuthUrl";
+import { LOG_IN } from "../../lib/graphql/mutations";
+import { AUTH_URL } from "../../lib/graphql/queries";
+import { Viewer } from "../../lib/types";
+import { ErrorBanner } from "../../lib/components";
 import {
   displayErrorMessage,
   displaySuccessNotification,
 } from "../../lib/utils";
-import { Redirect } from "react-router-dom";
+import googleLogo from "./assets/google_logo.jpg";
+const { Content } = Layout;
+const { Text, Title } = Typography;
 
 interface Props {
   setViewer: (viewer: Viewer) => void;
 }
-
-const { Content } = Layout;
-const { Text, Title } = Typography;
-
 export const Login = ({ setViewer }: Props) => {
+  // 和useContext 一样，client就是那个消费者
   const client = useApolloClient();
-  // 通过apollo提供的useMutation方法，向GraphQL服务器发起logIn请求
-  // PUZZ:logIn这个函数时哪里来的？GraphQL返回的吗？
+  //PUZZ: 解构语法和ts的类型定义语法会冲突吗？
   const [
     logIn,
     { data: logInData, loading: logInLoading, error: logInError },
@@ -35,13 +33,18 @@ export const Login = ({ setViewer }: Props) => {
     onCompleted: (data) => {
       if (data && data.logIn) {
         setViewer(data.logIn);
-        console.log(data);
-        displaySuccessNotification("You've successfully logged in!");
+        console.log(`登录成功，返回的数据用户数据为：`);
+        console.log(data)
+        displaySuccessNotification("成功登录，欢迎到来");
       }
     },
+    onError:() => {
+      console.log(`登录出错`)
+      displayErrorMessage(`登录失败！`)
+    }
   });
-  // PUZZ: useRef 用法不清楚
   const logInRef = useRef(logIn);
+  // 获取code，开始登录
   useEffect(() => {
     // 获取code
     const code = new URL(window.location.href).searchParams.get("code");
