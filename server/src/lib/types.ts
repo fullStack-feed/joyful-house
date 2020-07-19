@@ -1,4 +1,11 @@
 import { Collection, ObjectId } from "mongodb";
+export interface Viewer {
+  _id?: string;
+  token?: string;
+  avatar?: string;
+  walletId?: string;
+  didRequest: boolean;
+}
 /**
  * 约束房子类型，是别墅还是民宅...
  *
