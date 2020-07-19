@@ -6,6 +6,8 @@ import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "@apollo/react-hooks";
 import * as serviceWorker from "./serviceWorker";
 import "./styles/index.css";
+import { Login } from "./sections/Login";
+import { Layout } from "antd";
 
 const client = new ApolloClient({
   uri: "/api",
@@ -13,16 +15,19 @@ const client = new ApolloClient({
 
 const App = () => (
   <Router>
-    <Switch>
-      <Route exact path="/" component={Home}></Route>
-      <Route exact path="/host" component={Host} />
-      {/* 动态路由，根据不同用户id显示不同Listing页面 */}
-      <Route exact path="/listing/:id" component={Listing} />
-      {/* ? 表示location字段可有可无 */}
-      <Route exact path="/listings/:location?" component={Listings} />
-      <Route exact path="/user/:id" component={User} />
-      <Route component={NotFound} />
-    </Switch>
+    <Layout id="app">
+      <Switch>
+        <Route exact path="/" component={Home}></Route>
+        <Route exact path="/host" component={Host} />
+        <Route exact path="/login" component={Login} />
+        {/* 动态路由，根据不同用户id显示不同Listing页面 */}
+        <Route exact path="/listing/:id" component={Listing} />
+        {/* ? 表示location字段可有可无 */}
+        <Route exact path="/listings/:location?" component={Listings} />
+        <Route exact path="/user/:id" component={User} />
+        <Route component={NotFound} />
+      </Switch>
+    </Layout>
   </Router>
 );
 
