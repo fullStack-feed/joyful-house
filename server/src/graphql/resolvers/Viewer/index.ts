@@ -12,6 +12,7 @@ const logInViaGoogle = async (
   if (!user) {
     throw new Error("谷歌登录失败");
   }
+  console.log(`谷歌认证成功，获取到用户数据`);
   const userNamesList = user.names && user.names.length ? user.names : null;
   const userPhotosList = user.photos && user.photos.length ? user.photos : null;
   const userEmailsList =
@@ -38,7 +39,7 @@ const logInViaGoogle = async (
     userEmailsList && userEmailsList[0].value ? userEmailsList[0].value : null;
 
   if (!userId || !userName || !userAvatar || !userEmail) {
-    throw new Error("Google login error");
+    throw new Error("谷歌用户数据出错");
   }
   // 从数据库中获取用户信息
   const updateRes = await db.users.findOneAndUpdate(
@@ -56,6 +57,7 @@ const logInViaGoogle = async (
   let viewer = updateRes.value;
   // 如果没有用户信息，则向数据库中存入用户信息
   if (!viewer) {
+    console.log(`开始向数据库存入数据`);
     const insertResult = await db.users.insertOne({
       _id: userId,
       token,
@@ -68,6 +70,7 @@ const logInViaGoogle = async (
     });
     viewer = insertResult.ops[0];
   }
+  console.log(`存入数据成功`);
   return viewer;
 };
 export const viewerResolvers: IResolvers = {
@@ -99,6 +102,7 @@ export const viewerResolvers: IResolvers = {
       try {
         // 获取用户用于登录的code
         const code = input ? input.code : null;
+        console.log(`从客户端传递过来的参数code为: ${code}`);
         // TODO: CSRF 攻击
         const token = crypto.randomBytes(16).toString("hex");
         const viewer: User | undefined = code
