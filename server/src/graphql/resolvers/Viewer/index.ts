@@ -24,7 +24,8 @@ const logInViaGoogle = async (
   if (!user) {
     throw new Error("谷歌登录失败");
   }
-  console.log(`谷歌认证成功，获取到用户数据`);
+  console.log(`谷歌认证成功，获取到用户数据为：`);
+  console.log(user)
   const userNamesList = user.names && user.names.length ? user.names : null;
   const userPhotosList = user.photos && user.photos.length ? user.photos : null;
   const userEmailsList =
@@ -80,9 +81,10 @@ const logInViaGoogle = async (
       bookings: [],
       listings: [],
     });
+    console.log(`存入数据成功`);
     viewer = insertResult.ops[0];
   }
-  console.log(`存入数据成功`);
+  console.log(`开始写入cookie`)
   // 返回viewer前，将cookie 写入并返回给前端
   res.cookie("viewer", userId, {
     ...cookieOptions,
@@ -138,10 +140,12 @@ export const viewerResolvers: IResolvers = {
       try {
         // 获取用户用于登录的code
         const code = input ? input.code : null;
-        console.log(`从客户端传递过来的参数code为: ${code}`);
+        console.log(`从客户端传递过来的参数用于授权的code为: ${code}`);
         // TODO: CSRF 攻击
         const token = crypto.randomBytes(16).toString("hex");
-        // 如果本次登录没有携带code，要么是刷新页面，要么是二次登录，走cookie持久化
+
+        // 如果本次登录没有携带code，要么是刷新页面，要么是二次登录，走cookie持久化登录
+
         const viewer: User | undefined = code
           ? await logInViaGoogle(code, token, db, res)
           : await logInViaCookie(token, db, req, res);
@@ -173,7 +177,7 @@ export const viewerResolvers: IResolvers = {
       }
     },
   },
-  // 不明白为什么这里可以给type 类型的 Viewer 设置函数，这是在干嘛？
+  // PUZZ: 不明白为什么这里可以给type 类型的 Viewer 设置函数，这是在干嘛？
   Viewer: {
     id: (viewer: Viewer): string | undefined => {
       return viewer._id;

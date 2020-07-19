@@ -26,10 +26,19 @@ import {
 
 //TODO: 登录功能是否可以抽成一个自定义hooks？这样能够减少Login组件和App组件的逻辑
 /**
- * 连接GraphQL endPoint，拿到实例对象：client
+ * 连接GraphQL endPoint，拿到实例对象：client,
+ * 并在所有请求GraphQL的报文中，添加头部字段：防CSRF用
  */
 const client = new ApolloClient({
   uri: "/api",
+  request: async operation => {
+    const token = sessionStorage.getItem('token');
+    operation.setContext({
+      headers: {
+        "X-CSRF-TOKEN" : token || ""
+      }
+    })
+  }
 });
 
 const initialViewer: Viewer = {
@@ -57,6 +66,11 @@ const App = () => {
       if (data && data.logIn) {
         // 当logIn执行成功后，判断是否存在logIn对象（里面保存了viewer对象）
         setViewer(data.logIn);
+        if(data && data.logIn.token) {
+          sessionStorage.setItem('token',data.logIn.token)
+        }else {
+          sessionStorage.removeItem('token');
+        }
       }
     },
   });
