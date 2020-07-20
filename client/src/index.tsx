@@ -117,7 +117,7 @@ const App = () => {
           <Route exact path="/listing/:id" component={Listing}/>
           {/* ? 表示location字段可有可无 */}
           <Route exact path="/listings/:location?" component={Listings}/>
-          <Route exact path="/user/:id" component={User}/>
+          <Route exact path="/user/:id" render={props => <User {...props} viewer={viewer}/>}/>
           <Route component={NotFound}/>
         </Switch>
       </Layout>
