@@ -1,4 +1,6 @@
 import { Collection, ObjectId } from "mongodb";
+//---- 用户类型定义
+//----
 export interface Viewer {
   _id?: string;
   token?: string;
@@ -34,7 +36,7 @@ export interface Booking {
   // 用于标识当前的订单号
   _id: ObjectId;
   // 用于标识当前对应的房子
-  lisitng: ObjectId;
+  listing: ObjectId;
   // --- 以下字段用于标识：某用户的入住时间和退房信息
   tenant: string;
   checkIn: string;
@@ -91,6 +93,7 @@ export interface User {
   income: number;
   bookings: ObjectId[];
   listings: ObjectId[];
+  authorized?: boolean;
 }
 export interface Database {
   bookings: Collection<Booking>;

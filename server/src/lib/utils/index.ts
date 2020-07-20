@@ -1,4 +1,4 @@
-import {Database} from "../types";
+import {Database,User} from "../types";
 import {Request} from 'express'
 
 /**
