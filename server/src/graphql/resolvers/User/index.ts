@@ -28,8 +28,7 @@ export const userResolvers: IResolvers = {
     }
   },
   // TODO:
-  //  trivial resolvers 之所与需要，是因为以下数据需要从user中解析出来
-  //  无法直接获取?
+  // 可以理解为：当用户查询到User中的某一个字段时，经过一系列处理后才会返回。
   User: {
     id: (user: User): string => {
       return user._id;

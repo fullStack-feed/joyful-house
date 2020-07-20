@@ -177,7 +177,6 @@ export const viewerResolvers: IResolvers = {
       }
     },
   },
-  // PUZZ: 不明白为什么这里可以给type 类型的 Viewer 设置函数，这是在干嘛？
   Viewer: {
     id: (viewer: Viewer): string | undefined => {
       return viewer._id;
