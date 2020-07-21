@@ -15,8 +15,8 @@ export interface Viewer {
  * @enum {number}
  */
 export enum ListingType {
-  Apartment = "apartment",
-  House = "house",
+  Apartment = "APARTMENT",
+  House = "HOUSE"
 }
 
 export interface BookingsIndexMonth {
@@ -99,4 +99,25 @@ export interface Database {
   bookings: Collection<Booking>;
   listings: Collection<Listing>;
   users: Collection<User>;
+}
+
+/**
+ * 每个订单的数据接口
+ */
+export interface Listing {
+  _id: ObjectId;
+  title: string;
+  description: string;
+  image: string;
+  host: string;
+  type: ListingType;
+  address: string;
+  country: string;
+  admin: string;
+  city: string;
+  bookings: ObjectId[];
+  bookingsIndex: BookingsIndexYear;
+  price: number;
+  numOfGuests: number;
+  authorized?: boolean;
 }

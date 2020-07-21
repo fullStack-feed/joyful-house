@@ -30,6 +30,7 @@
   "scripts": {
     "start": "nodemon src/index.ts",
     "seed": "ts-node temp/seed.ts",
+    "clear": "ts-node temp/clear.ts",
     "build": "tsc -p ./"
   }
 }

@@ -76,11 +76,10 @@ export const User = ({viewer,match}: Props & RouteComponentProps<MatchParams>) =
   ) : null;
 
   return (
-    //TODO: 栅格布局 出现问题
     <Content className="user">
-      <Row gutter={12}  justify="space-between">
+      <Row gutter={12} type="flex" justify="space-between">
         <Col xs={24}>{userProfileElement}</Col>
-        <Col flex="1" >
+        <Col xs={24} >
           {userListingsElement}
           {userBookingsElement}
         </Col>
