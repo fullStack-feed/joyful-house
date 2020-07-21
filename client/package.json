@@ -17,6 +17,7 @@
     "antd": "^3.21.2",
     "apollo-boost": "^0.4.9",
     "graphql": "^15.3.0",
+    "moment": "^2.27.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
