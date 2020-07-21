@@ -1,7 +1,14 @@
 import {IResolvers} from "apollo-server-express";
 import {Request} from 'express'
 import {Listing, Database, User} from "../../../lib/types";
-import {ListingArgs, ListingBookingsArgs, ListingBookingsData} from "./types";
+import {
+  ListingArgs,
+  ListingBookingsArgs,
+  ListingBookingsData,
+  ListingsArgs,
+  ListingsData,
+  ListingsFilter
+} from "./types";
 import {ObjectId} from "mongodb";
 import {authorize} from "../../../lib/utils";
 
@@ -10,7 +17,7 @@ export const listingResolvers: IResolvers = {
     listing: async (
       _root: undefined,
       {id}: ListingArgs,
-      {db, req}: { db: Database, req: Request }
+      {db, req}: { db: Database; req: Request }
     ): Promise<Listing> => {
       //  根据id获取
       try {
@@ -27,11 +34,42 @@ export const listingResolvers: IResolvers = {
       } catch (error) {
         throw new Error(`Failed to query listing: ${error}`);
       }
+    },
+    listings: async (
+      _root: undefined,
+      {filter, limit, page}: ListingsArgs,
+      {db}: { db: Database }
+    ): Promise<ListingsData> => {
+      try {
+        const data: ListingsData = {
+          total: 0,
+          result: []
+        };
+        // 查询所有数据
+        let cursor = await db.listings.find({});
+        if (filter && filter === ListingsFilter.PRICE_LOW_TO_HIGH) {
+          // filter listings from price low to high
+          cursor = cursor.sort({ price: 1 });
+        }
+
+        if (filter && filter === ListingsFilter.PRICE_HIGH_TO_LOW) {
+          // filter listings from price high to low
+          cursor = cursor.sort({ price: -1 });
+        }
+        cursor = cursor.skip(page > 0 ? (page - 1) * limit : 0);
+        cursor = cursor.limit(limit);
+        data.total = await cursor.count();
+        data.result = await cursor.toArray();
+
+        return data;
+      } catch (error) {
+        throw new Error(`Failed to query listings: ${error}`);
+      }
     }
   },
   Listing: {
     id: (listing: Listing): string => {
-      return listing._id.toString()+'123';
+      return listing._id.toString();
     },
     host: async (
       listing: Listing,

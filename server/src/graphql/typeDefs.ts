@@ -1,6 +1,10 @@
 import {gql} from "apollo-server-express";
 
 export const typeDefs = gql`
+    enum ListingsFilter {
+        PRICE_LOW_TO_HIGH
+        PRICE_HIGH_TO_LOW
+    }
     # 用户信息
     type User {
         id: ID!
@@ -57,11 +61,11 @@ export const typeDefs = gql`
     input LogInInput {
         code: String!
     }
-    # 用于查询登录的url
     type Query {
         authUrl: String!
         user(id: ID!): User!
         listing(id:ID!):Listing!
+        listings(filter: ListingsFilter!,limit:Int!,page:Int!):Listings!
     }
     # PUZZ: 这里Boolean! 是什么意思？为什么要有didRequest这个字段呢？
     # didRequest 字段标识该请求是否已经被处理
