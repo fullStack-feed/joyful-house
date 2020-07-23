@@ -7,10 +7,12 @@ import {
   ListingBookingsData,
   ListingsArgs,
   ListingsData,
-  ListingsFilter
+  ListingsFilter,
+  ListingsQuery
 } from "./types";
 import {ObjectId} from "mongodb";
 import {authorize} from "../../../lib/utils";
+import {Google} from "../../../lib/api";
 
 export const listingResolvers: IResolvers = {
   Query: {
@@ -37,24 +39,44 @@ export const listingResolvers: IResolvers = {
     },
     listings: async (
       _root: undefined,
-      {filter, limit, page}: ListingsArgs,
+      {location, filter, limit, page}: ListingsArgs,
       {db}: { db: Database }
     ): Promise<ListingsData> => {
       try {
+        // 用于根据用户输入的地理进行筛选；
+        const query: ListingsQuery = {};
         const data: ListingsData = {
+          region: null,
           total: 0,
           result: []
         };
+        if (location) {
+          try {
+            const { country, admin, city } = await Google.geocode(location);
+            if (city) query.city = city;
+            if (admin) query.admin = admin;
+            if (country) {
+              query.country = country;
+            } else {
+              throw new Error("no country found");
+            }
+            const cityText = city ? `${city}, ` : "";
+            const adminText = admin ? `${admin}, ` : "";
+            data.region = `${cityText}${adminText}${country}`;
+          }catch (e) {
+            console.log(`谷歌搜索链接失败`,e)
+          }
+        }
         // 查询所有数据
-        let cursor = await db.listings.find({});
+        let cursor = await db.listings.find(query);
         if (filter && filter === ListingsFilter.PRICE_LOW_TO_HIGH) {
           // filter listings from price low to high
-          cursor = cursor.sort({ price: 1 });
+          cursor = cursor.sort({price: 1});
         }
 
         if (filter && filter === ListingsFilter.PRICE_HIGH_TO_LOW) {
           // filter listings from price high to low
-          cursor = cursor.sort({ price: -1 });
+          cursor = cursor.sort({price: -1});
         }
         cursor = cursor.skip(page > 0 ? (page - 1) * limit : 0);
         cursor = cursor.limit(limit);

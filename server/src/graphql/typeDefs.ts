@@ -18,6 +18,7 @@ export const typeDefs = gql`
     }
     # 用于分页的房子数据
     type Listings {
+        region: String #用于Google查询地理位置后返回详细的地址
         total: Int!
         result: [Listing!]!
     }
@@ -43,6 +44,8 @@ export const typeDefs = gql`
         host: User!
         type: ListingType!
         address: String!
+        country: String!
+        admin: String!
         city: String!
         bookings(limit: Int!, page: Int!): Bookings
         bookingsIndex: String!
@@ -65,7 +68,7 @@ export const typeDefs = gql`
         authUrl: String!
         user(id: ID!): User!
         listing(id:ID!):Listing!
-        listings(filter: ListingsFilter!,limit:Int!,page:Int!):Listings!
+        listings(location: String,filter: ListingsFilter!,limit:Int!,page:Int!):Listings!
     }
     # PUZZ: 这里Boolean! 是什么意思？为什么要有didRequest这个字段呢？
     # didRequest 字段标识该请求是否已经被处理

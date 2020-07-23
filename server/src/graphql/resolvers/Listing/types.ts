@@ -20,12 +20,20 @@ export enum ListingsFilter {
 }
 
 export interface ListingsArgs {
+  location: string | null;
   filter: ListingsFilter;
   limit: number;
   page: number;
 }
 
 export interface ListingsData {
+  region: string | null;
   total: number;
   result: Listing[];
+}
+
+export interface ListingsQuery {
+  country?: string;
+  admin?: string;
+  city?: string;
 }
