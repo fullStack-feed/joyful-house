@@ -10,7 +10,7 @@ import {
   Listings,
   User,
   NotFound,
-  AppHeader,
+  AppHeader, Stripe,
 } from "./sections";
 import * as serviceWorker from "./serviceWorker";
 import "./styles/index.css";
@@ -113,11 +113,21 @@ const App = () => {
             path="/login"
             render={(props) => <Login {...props} setViewer={setViewer}/>}
           />
+          <Route
+            exact
+            path="/stripe"
+            render={props => <Stripe {...props} viewer={viewer} setViewer={setViewer} />}
+          />
           {/* 动态路由，根据不同用户id显示不同Listing页面 */}
           <Route exact path="/listing/:id" component={Listing}/>
           {/* ? 表示location字段可有可无 */}
           <Route exact path="/listings/:location?" component={Listings}/>
-          <Route exact path="/user/:id" render={props => <User {...props} viewer={viewer}/>}/>
+          <Route
+            exact
+            path="/user/:id"
+            render={props => <User {...props} viewer={viewer} setViewer={setViewer} />}
+          />
+          <Route exact path="/user/:id" render={props => <User {...props} viewer={viewer} setViewer={setViewer}/>}/>
           <Route component={NotFound}/>
         </Switch>
       </Layout>

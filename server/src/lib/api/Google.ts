@@ -33,7 +33,6 @@ const auth = new google.auth.OAuth2(
   process.env.G_CLIENT_SECRET,
   `${process.env.PUBLIC_URL}/login`
 );
-
 export const Google = {
   geocode: async (address: string) => {
     if (!process.env.G_GEOCODE_KEY) throw new Error("missing Google Maps API key");
@@ -45,7 +44,7 @@ export const Google = {
     if (res.status < 200 || res.status > 299) {
       throw new Error("failed to geocode address");
     }
-    console.log(`查询结果-`,res.data);
+    console.log(res.data);
     return parseAddress(res.data.results[0].address_components);
   },
   authUrl: auth.generateAuthUrl({

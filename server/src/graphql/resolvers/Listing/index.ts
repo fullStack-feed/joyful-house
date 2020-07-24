@@ -1,7 +1,8 @@
 import {IResolvers} from "apollo-server-express";
 import {Request} from 'express'
-import {Listing, Database, User} from "../../../lib/types";
+import {Listing, Database, User, ListingType} from "../../../lib/types";
 import {
+  HostListingArgs, HostListingInput,
   ListingArgs,
   ListingBookingsArgs,
   ListingBookingsData,
@@ -14,6 +15,26 @@ import {ObjectId} from "mongodb";
 import {authorize} from "../../../lib/utils";
 import {Google} from "../../../lib/api";
 
+const verifyHostListingInput =
+  ({
+     title,
+     description,
+     type,
+     price
+   }: HostListingInput) => {
+    if (title.length > 100) {
+      throw new Error("房子名称过长");
+    }
+    if (description.length > 5000) {
+      throw new Error("描述信息过长");
+    }
+    if (type !== ListingType.Apartment && type !== ListingType.House) {
+      throw new Error("房子类型不符");
+    }
+    if (price < 0) {
+      throw new Error("房子的价钱不能小于0");
+    }
+  };
 export const listingResolvers: IResolvers = {
   Query: {
     listing: async (
@@ -50,9 +71,11 @@ export const listingResolvers: IResolvers = {
           total: 0,
           result: []
         };
+        console.log(`location is:`, location)
         if (location) {
           try {
-            const { country, admin, city } = await Google.geocode(location);
+            const {country, admin, city} = await Google.geocode(location);
+            console.log(`这里就出错了`)
             if (city) query.city = city;
             if (admin) query.admin = admin;
             if (country) {
@@ -63,8 +86,8 @@ export const listingResolvers: IResolvers = {
             const cityText = city ? `${city}, ` : "";
             const adminText = admin ? `${admin}, ` : "";
             data.region = `${cityText}${adminText}${country}`;
-          }catch (e) {
-            console.log(`谷歌搜索链接失败`,e)
+          } catch (e) {
+            console.log(`谷歌搜索链接失败`, e)
           }
         }
         // 查询所有数据
@@ -87,6 +110,49 @@ export const listingResolvers: IResolvers = {
       } catch (error) {
         throw new Error(`Failed to query listings: ${error}`);
       }
+    }
+  },
+  Mutation: {
+    hostListing: async (
+      _root: undefined,
+      {input}: HostListingArgs,
+      {db, req}: { db: Database; req: Request }
+    ): Promise<Listing> => {
+      // ...
+      //  1. 对前端传递过来的form数据进行校验
+      verifyHostListingInput(input);
+      //  2. 对用户信息进行校验，防止非法登陆
+      let viewer = await authorize(db, req);
+      // 如果用户不存在直接抛出异常
+      if (!viewer) {
+        throw new Error("viewer cannot be found");
+      }
+      const { country, admin, city } = await Google.geocode(input.address);
+      // FIXME: 由于地理信息查询有问题，这里的内容会查不到，先给一个空串
+      if (!country || !admin || !city) {
+        console.log('google 地理查询失败')
+      }
+    //  3. 向数据库存储内容
+      console.log(`开始向数据库写入房子信息`)
+      const insertResult = await db.listings.insertOne({
+        _id: new ObjectId(),
+        ...input,
+        bookings: [],
+        bookingsIndex: {},
+        country : 'mock',
+        admin : 'mock',
+        city : 'mock',
+        host: viewer._id
+      });
+      // 4. 向数据库中对应的用户信息中插入房子内容
+      const insertedListing: Listing = insertResult.ops[0];
+
+      await db.users.updateOne(
+        { _id: viewer._id },
+        { $push: { listings: insertedListing._id } }
+      );
+      // 5. 将处理完毕的房子信息返回
+      return insertedListing;
     }
   },
   Listing: {
@@ -136,5 +202,6 @@ export const listingResolvers: IResolvers = {
     }
   }
 }
+
 
 

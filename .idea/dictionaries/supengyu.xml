@@ -2,6 +2,7 @@
   <dictionary name="supengyu">
     <words>
       <w>csrf</w>
+      <w>refetch</w>
     </words>
   </dictionary>
 </component>

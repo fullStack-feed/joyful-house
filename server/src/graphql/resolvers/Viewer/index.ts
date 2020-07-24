@@ -1,9 +1,10 @@
 import { Response, Request } from "express";
-import { LogInArgs } from "./types";
+import {ConnectStripeArgs, LogInArgs} from "./types";
 import { IResolvers } from "apollo-server-express";
 import { Viewer, Database, User } from "../../../lib/types";
-import { Google } from "../../../lib/api";
+import {Google, Stripe} from "../../../lib/api";
 import crypto from "crypto";
+import {authorize} from "../../../lib/utils";
 /**
  * 要写入的cookie字段
  */
@@ -176,6 +177,84 @@ export const viewerResolvers: IResolvers = {
         throw new Error(`注销失败: ${error}`);
       }
     },
+    connectStripe: async (
+      _root: undefined,
+      { input }: ConnectStripeArgs,
+      { db, req }: { db: Database; req: Request }
+    ): Promise<Viewer> => {
+      try {
+        const { code } = input;
+        let viewer = await authorize(db, req);
+        if (!viewer) {
+          throw new Error("该用户没有权限连接到stripe");
+        }
+        const wallet = await Stripe.connect(code);
+        if (!wallet) {
+          throw new Error("stripe连接出错");
+        }
+        const updateRes = await db.users.findOneAndUpdate(
+          { _id: viewer._id },
+          { $set: { walletId: wallet.stripe_user_id } },
+          { returnOriginal: false }
+        );
+        if (!updateRes.value) {
+          throw new Error("DB更新用户数据出错，在connectStripe函数中");
+        }
+        viewer = updateRes.value;
+        return {
+          _id: viewer._id,
+          token: viewer.token,
+          avatar: viewer.avatar,
+          walletId: viewer.walletId,
+          didRequest: true
+        };
+      } catch (e) {
+        throw new Error(`连接到stripe失败，全局捕获错误: ${e}`);
+      }
+    },
+    /**
+     *  该resolver的核心就是：修改database中保存的用户信息
+     * @param _root
+     * @param _args
+     * @param db
+     * @param req
+     */
+    disconnectStripe: async (
+      _root: undefined,
+      _args: {},
+      { db, req }: { db: Database; req: Request }
+    ): Promise<Viewer> => {
+      try {
+        let viewer = await authorize(db, req);
+        if (!viewer) {
+          throw new Error("viewer cannot be found");
+        }
+
+
+        const updateRes = await db.users.findOneAndUpdate(
+          { _id: viewer._id },
+          // @ts-ignore
+          { $set: { walletId: null } },
+          { returnOriginal: false }
+        );
+
+        if (!updateRes.value) {
+          throw new Error("viewer could not be updated");
+        }
+
+        viewer = updateRes.value;
+
+        return {
+          _id: viewer._id,
+          token: viewer.token,
+          avatar: viewer.avatar,
+          walletId: viewer.walletId,
+          didRequest: true
+        };
+      } catch (error) {
+        throw new Error(`Failed to disconnect with Stripe: ${error}`);
+      }
+    }
   },
   Viewer: {
     id: (viewer: Viewer): string | undefined => {
