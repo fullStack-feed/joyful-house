@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 import express, { Application } from "express";
+import bodyParser from "body-parser";
 import { ApolloServer } from "apollo-server-express";
 import { connectDatabase } from "./database";
 import { typeDefs, resolvers } from "./graphql";
@@ -8,6 +9,7 @@ import cookieParser from "cookie-parser";
 
 const mount = async (app: Application) => {
   const db = await connectDatabase();
+  app.use(bodyParser.json({ limit: "2mb" }));
   // 处理cookie 持久化登录的中间件
   app.use(cookieParser(process.env.SECRET));
   const server = new ApolloServer({

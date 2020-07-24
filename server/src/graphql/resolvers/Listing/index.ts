@@ -13,7 +13,7 @@ import {
 } from "./types";
 import {ObjectId} from "mongodb";
 import {authorize} from "../../../lib/utils";
-import {Google} from "../../../lib/api";
+import { Cloudinary, Google } from "../../../lib/api";
 
 const verifyHostListingInput =
   ({
@@ -127,16 +127,19 @@ export const listingResolvers: IResolvers = {
       if (!viewer) {
         throw new Error("viewer cannot be found");
       }
-      const { country, admin, city } = await Google.geocode(input.address);
+      // 存储图片到云上
+      let imageUrl = await Cloudinary.upload(input.image);
+      // const { country, admin, city } = await Google.geocode(input.address);
       // FIXME: 由于地理信息查询有问题，这里的内容会查不到，先给一个空串
-      if (!country || !admin || !city) {
-        console.log('google 地理查询失败')
-      }
+      // if (!country || !admin || !city) {
+      //   console.log('google 地理查询失败')
+      // }
     //  3. 向数据库存储内容
       console.log(`开始向数据库写入房子信息`)
       const insertResult = await db.listings.insertOne({
         _id: new ObjectId(),
         ...input,
+        image: imageUrl,
         bookings: [],
         bookingsIndex: {},
         country : 'mock',
