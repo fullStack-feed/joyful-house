@@ -5,7 +5,7 @@ import {render} from "react-dom";
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import {
   Home,
-  Host,
+  WrappedHost as Host,
   Listing,
   Listings,
   User,
@@ -107,7 +107,7 @@ const App = () => {
         </Affix>
         <Switch>
           <Route exact path="/" component={Home}></Route>
-          <Route exact path="/host" component={Host}/>
+          <Route exact path="/host" render={props => <Host {...props} viewer={viewer} />} />
           <Route
             exact
             path="/login"
