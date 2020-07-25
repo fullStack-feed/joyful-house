@@ -23,7 +23,7 @@ import {
   LogIn as LogInData,
   LogInVariables,
 } from "./lib/graphql/mutations/LogIn/__generated__/LogIn";
-
+import {StripeProvider, Elements} from "react-stripe-elements";
 //TODO: 登录功能是否可以抽成一个自定义hooks？这样能够减少Login组件和App组件的逻辑
 /**
  * 连接GraphQL endPoint，拿到实例对象：client,
@@ -35,7 +35,7 @@ const client = new ApolloClient({
     const token = sessionStorage.getItem('token');
     operation.setContext({
       headers: {
-        "X-CSRF-TOKEN" : token || ""
+        "X-CSRF-TOKEN": token || ""
       }
     })
   }
@@ -57,7 +57,7 @@ const App = () => {
    * useMutation执行后返回的元祖包括：
    *
    * - A mutate function that you can call at any time to execute the mutation
-     - An object with fields that represent the current status of the mutation's execution
+   - An object with fields that represent the current status of the mutation's execution
 
    https://www.apollographql.com/docs/react/data/mutations/
    * */
@@ -66,9 +66,9 @@ const App = () => {
       if (data && data.logIn) {
         // 当logIn执行成功后，判断是否存在logIn对象（里面保存了viewer对象）
         setViewer(data.logIn);
-        if(data && data.logIn.token) {
-          sessionStorage.setItem('token',data.logIn.token)
-        }else {
+        if (data && data.logIn.token) {
+          sessionStorage.setItem('token', data.logIn.token)
+        } else {
           sessionStorage.removeItem('token');
         }
       }
@@ -99,39 +99,49 @@ const App = () => {
   ) : null;
   // PUZZ: 不明白react-router的render props 模式
   return (
-    <Router>
-      <Layout id="app">
-        {logInErrorBannerElement}
-        <Affix offsetTop={0} className="app__affix-header">
-          <AppHeader viewer={viewer} setViewer={setViewer}/>
-        </Affix>
-        <Switch>
-          <Route exact path="/" component={Home}></Route>
-          <Route exact path="/host" render={props => <Host {...props} viewer={viewer} />} />
-          <Route
-            exact
-            path="/login"
-            render={(props) => <Login {...props} setViewer={setViewer}/>}
-          />
-          <Route
-            exact
-            path="/stripe"
-            render={props => <Stripe {...props} viewer={viewer} setViewer={setViewer} />}
-          />
-          {/* 动态路由，根据不同用户id显示不同Listing页面 */}
-          <Route exact path="/listing/:id" component={Listing}/>
-          {/* ? 表示location字段可有可无 */}
-          <Route exact path="/listings/:location?" component={Listings}/>
-          <Route
-            exact
-            path="/user/:id"
-            render={props => <User {...props} viewer={viewer} setViewer={setViewer} />}
-          />
-          <Route exact path="/user/:id" render={props => <User {...props} viewer={viewer} setViewer={setViewer}/>}/>
-          <Route component={NotFound}/>
-        </Switch>
-      </Layout>
-    </Router>
+    <StripeProvider apiKey={process.env.REACT_APP_S_PUBLISHABLE_KEY as string}>
+      <Router>
+        <Layout id="app">
+          {logInErrorBannerElement}
+          <Affix offsetTop={0} className="app__affix-header">
+            <AppHeader viewer={viewer} setViewer={setViewer}/>
+          </Affix>
+          <Switch>
+            <Route exact path="/" component={Home}></Route>
+            <Route exact path="/host" render={props => <Host {...props} viewer={viewer}/>}/>
+            <Route
+              exact
+              path="/login"
+              render={(props) => <Login {...props} setViewer={setViewer}/>}
+            />
+            <Route
+              exact
+              path="/stripe"
+              render={props => <Stripe {...props} viewer={viewer} setViewer={setViewer}/>}
+            />
+            {/* 动态路由，根据不同用户id显示不同Listing页面 */}
+            <Route
+              exact
+              path="/listing/:id"
+              render={props => (
+                <Elements>
+                  <Listing {...props} viewer={viewer} />
+                </Elements>
+              )}
+            />
+            {/* ? 表示location字段可有可无 */}
+            <Route exact path="/listings/:location?" component={Listings}/>
+            <Route
+              exact
+              path="/user/:id"
+              render={props => <User {...props} viewer={viewer} setViewer={setViewer}/>}
+            />
+            <Route exact path="/user/:id" render={props => <User {...props} viewer={viewer} setViewer={setViewer}/>}/>
+            <Route component={NotFound}/>
+          </Switch>
+        </Layout>
+      </Router>
+    </StripeProvider>
   );
 };
 

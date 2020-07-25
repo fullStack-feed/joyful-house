@@ -43,33 +43,7 @@ export interface Booking {
   checkOut: string;
   // ---
 }
-/**
- * 对每个房子进行类型约束
- *
- * @export
- * @interface Listing
- */
-export interface Listing {
-  _id: ObjectId;
-  title: string;
-  description: string;
-  image: string;
-  // PUZZ:房子拥有者？
-  host: string;
-  type: ListingType;
-  // --- 以下字段用于Google地图定位
-  address: string;
-  country: string;
-  admin: string;
-  city: string;
-  // ---
-  bookings: ObjectId[];
-  // PUZZ:用于定义房子的日程？如果接客，设置为true？
-  bookingsIndex: BookingsIndexYear;
-  price: number;
-  // 能够接客的人数
-  numOfGuests: number;
-}
+
 /**
  * 对用户数据进行类型约束
  *
@@ -101,9 +75,11 @@ export interface Database {
   users: Collection<User>;
 }
 
-/**
- * 每个订单的数据接口
- */
+
+export interface BookingsIndex {
+  [key: string]: BookingsIndexYear;
+}
+
 export interface Listing {
   _id: ObjectId;
   title: string;
@@ -116,7 +92,7 @@ export interface Listing {
   admin: string;
   city: string;
   bookings: ObjectId[];
-  bookingsIndex: BookingsIndexYear;
+  bookingsIndex: BookingsIndex;
   price: number;
   numOfGuests: number;
   authorized?: boolean;

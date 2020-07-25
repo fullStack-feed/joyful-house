@@ -1,6 +1,11 @@
 import React, {useState} from "react";
 import {RouteComponentProps} from 'react-router-dom'
-import {ListingBookings, ListingDetails, ListingCreateBooking} from "./components";
+import {
+  ListingBookings,
+  ListingDetails,
+  ListingCreateBooking,
+  WrappedListingCreateBookingModal as ListingCreateBookingModal,
+} from "./components";
 import {Col, Layout, Row} from "antd";
 import {useQuery} from "@apollo/react-hooks";
 import {LISTING} from "../../lib/graphql/queries";
@@ -9,7 +14,8 @@ import {
   ListingVariables
 } from "../../lib/graphql/queries/Listing/__generated__/Listing";
 import {ErrorBanner, PageSkeleton} from "../../lib/components";
-import { Moment } from "moment";
+import {Moment} from "moment";
+import {Viewer} from "../../lib/types";
 
 const {Content} = Layout;
 
@@ -20,12 +26,17 @@ interface MatchParams {
 
 const PAGE_LIMIT = 3;
 
-export const Listing = ({match}: RouteComponentProps<MatchParams>) => {
+interface Props {
+  viewer: Viewer
+}
+
+export const Listing = ({match, viewer}: Props & RouteComponentProps<MatchParams>) => {
   const [checkInDate, setCheckInDate] = useState<Moment | null>(null);
   const [checkOutDate, setCheckOutDate] = useState<Moment | null>(null);
   const [bookingsPage, setBookingsPage] = useState(1);
+  const [modalVisible, setModalVisible] = useState(false);
 //  发起GraphQL查询
-  const {data, error, loading} = useQuery<ListingData, ListingVariables>(LISTING, {
+  const {data, error, loading,refetch} = useQuery<ListingData, ListingVariables>(LISTING, {
     variables: {
       id: match.params.id,
       bookingsPage,
@@ -50,6 +61,15 @@ export const Listing = ({match}: RouteComponentProps<MatchParams>) => {
   // 判断是否存在数据，以便确定 ListingDetails 和 ListingBookings 组件的渲染；
   const listing = data ? data.listing : null;
   const listingBookings = listing ? listing.bookings : null;
+  const clearBookingData = () => {
+    setModalVisible(false);
+    setCheckInDate(null);
+    setCheckOutDate(null);
+  };
+  const handleListingRefetch = async () => {
+    await refetch();
+  };
+
   const listingDetailsElement = listing ? <ListingDetails listing={listing}/> : null;
   const listingBookingsElement = listingBookings ? <ListingBookings
     listingBookings={listingBookings}
@@ -58,13 +78,29 @@ export const Listing = ({match}: RouteComponentProps<MatchParams>) => {
     setBookingsPage={setBookingsPage}
   /> : null;
   const listingCreateBookingElement = listing ? (<ListingCreateBooking
+    viewer={viewer}
+    host={listing.host}
     price={listing.price}
+    bookingsIndex={listing.bookingsIndex}
     checkInDate={checkInDate}
     checkOutDate={checkOutDate}
     setCheckInDate={setCheckInDate}
     setCheckOutDate={setCheckOutDate}
+    setModalVisible={setModalVisible}
   />) : null;
-
+  const listingCreateBookingModalElement =
+    listing && checkInDate && checkOutDate ? (
+      <ListingCreateBookingModal
+        id={listing.id}
+        price={listing.price}
+        modalVisible={modalVisible}
+        checkInDate={checkInDate}
+        checkOutDate={checkOutDate}
+        setModalVisible={setModalVisible}
+        clearBookingData={clearBookingData}
+        handleListingRefetch={handleListingRefetch}
+      />
+    ) : null;
 
   return (
     <Content className="listings">
@@ -77,6 +113,7 @@ export const Listing = ({match}: RouteComponentProps<MatchParams>) => {
           {listingCreateBookingElement}
         </Col>
       </Row>
+      {listingCreateBookingModalElement}
     </Content>
   );
 };
