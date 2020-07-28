@@ -4,7 +4,7 @@ import { Card, Layout, Typography, Spin } from "antd";
 import { useApolloClient, useMutation } from "@apollo/react-hooks";
 import {
   LogIn as LogInData,
-  LogInVariables,
+  LogInVariables
 } from "../../lib/graphql/mutations/LogIn/__generated__/LogIn";
 import { AuthUrl as AuthUrlData } from "../../lib/graphql/queries/AuthUrl/__generated__/AuthUrl";
 import { LOG_IN } from "../../lib/graphql/mutations";
