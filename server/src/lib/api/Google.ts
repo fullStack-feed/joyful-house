@@ -62,10 +62,7 @@ export const Google = {
   logIn: async (code: string) => {
     console.log(`开始OAuth登录认证流程，用户输入的code为：${code}`);
     const {tokens} = await auth.getToken(code);
-    auth.setCredentials(tokens);
-    console.log(
-      `通过google 获取的tokens 为${tokens},开始向google 发起第二次请求,不知道这次是做什么...`
-    );
+    auth.setCredentials(tokens);    
     const {data} = await google.people({version: "v1", auth}).people.get({
       resourceName: "people/me",
       personFields: "emailAddresses,names,photos",

@@ -13,7 +13,7 @@ import { UserOutlined, LoginOutlined, HomeOutlined } from "@ant-design/icons";
 const { Item, SubMenu } = Menu;
 interface Props {
   viewer: Viewer;
-  setViewer: (viewer: Viewer) => void;
+  setViewer: (viewer: Viewer) => void;  
 }
 
 export const MenuItems = ({ viewer, setViewer }: Props) => {
@@ -27,7 +27,7 @@ export const MenuItems = ({ viewer, setViewer }: Props) => {
         setViewer(data.logOut);
         sessionStorage.removeItem('token')
       }
-      displaySuccessNotification("你已经成功登出");
+      displaySuccessNotification("你已经成功登出");      
     },
     onError: () => {
       console.log(`登出mutations失败`);
@@ -45,19 +45,19 @@ export const MenuItems = ({ viewer, setViewer }: Props) => {
         <Item key="/user">
           <Link to={`/user/${viewer.id}`}>
             <UserOutlined />
-            Profile
+            个人信息
           </Link>
         </Item>
         <Item key="/logout">
           <div onClick={handleLogOut}>
             <LoginOutlined />
-            Log out
+            登出
           </div>
         </Item>
       </SubMenu>
     ) : (
       <Link to="/login">
-        <Button type="primary">Sign In</Button>
+        <Button type="primary">登录</Button>
       </Link>
     );
 
@@ -66,7 +66,7 @@ export const MenuItems = ({ viewer, setViewer }: Props) => {
       <Item key="/host">
         <Link to="/host">
           <HomeOutlined />
-          Host
+          发布
         </Link>
       </Item>
       {subMenuLogin}

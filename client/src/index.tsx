@@ -24,10 +24,8 @@ import {
   LogInVariables,
 } from "./lib/graphql/mutations/LogIn/__generated__/LogIn";
 import {StripeProvider, Elements} from "react-stripe-elements";
-//TODO: 登录功能是否可以抽成一个自定义hooks？这样能够减少Login组件和App组件的逻辑
 /**
- * 连接GraphQL endPoint，拿到实例对象：client,
- * 并在所有请求GraphQL的报文中，添加头部字段：防CSRF用
+ * 对每次请求做拦截，增加 “X-CSRF-TOKEN” 字段，使用用户的唯一标识 
  */
 const client = new ApolloClient({
   uri: "/api",
@@ -57,9 +55,9 @@ const App = () => {
    * useMutation执行后返回的元祖包括：
    *
    * - A mutate function that you can call at any time to execute the mutation
-   - An object with fields that represent the current status of the mutation's execution
-
-   https://www.apollographql.com/docs/react/data/mutations/
+   * - An object with fields that represent the current status of the mutation's execution
+   *
+   * https://www.apollographql.com/docs/react/data/mutations/
    * */
   const [logIn, {error}] = useMutation<LogInData, LogInVariables>(LOG_IN, {
     onCompleted: (data) => {
@@ -74,7 +72,6 @@ const App = () => {
       }
     },
   });
-  //PUZZ: react hooks使用：useRef
   /**
    * 这里使用ref是为了能够缓存logIn？
    *
@@ -103,7 +100,7 @@ const App = () => {
       <Router>
         <Layout id="app">
           {logInErrorBannerElement}
-          <Affix offsetTop={0} className="app__affix-header">
+          <Affix offsetTop={0} className="app__affix-header">            
             <AppHeader viewer={viewer} setViewer={setViewer}/>
           </Affix>
           <Switch>

@@ -32,7 +32,7 @@ export const Home = ({history}: RouteComponentProps) => {
     if (trimmedValue) {
       history.push(`/listings/${trimmedValue}`);
     } else {
-      displayErrorMessage("Please enter a valid search!");
+      displayErrorMessage("请输入搜索词");
     }
   };
   const renderListingsSection = () => {
@@ -45,18 +45,17 @@ export const Home = ({history}: RouteComponentProps) => {
     }
 
     return null;
-  };
-  //TODO: Listing resolver 多家了一个123
+  };  
   return (
     <Content className="home" style={{backgroundImage: `url(${mapBackground})`}}>
       <HomeHero onSearch={onSearch}/>
       <div className="home__cta-section">
         <Title level={2} className="home__cta-section-title">
-          Your guide for all things rental
+          帮助您找到最心仪的租赁目标！
         </Title>
-        <Paragraph>Helping you make the best decisions in renting your last minute locations.</Paragraph>
+        <Paragraph>只需一分钟就可以找到您需要，在您想去的地方！</Paragraph>
         <Link to="/listings/united%20states" className="ant-btn ant-btn-primary ant-btn-lg home__cta-section-button">
-          Popular listings in the United States
+         速揽
         </Link>
       </div>
       {renderListingsSection()}

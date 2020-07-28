@@ -1,4 +1,4 @@
-// require("dotenv").config();
+require("dotenv").config();
 import compression from "compression";
 import express, { Application } from "express";
 import bodyParser from "body-parser";
@@ -13,8 +13,8 @@ const mount = async (app: Application) => {
   // 对客户端文件进行压缩？这里不懂
   app.use(compression());
   // 静态请求全部走client代码
-  app.use(express.static(`${__dirname}/client`));
-  app.get("/*", (_req, res) => res.sendFile(`${__dirname}/client/index.html`));
+  // app.use(express.static(`${__dirname}/client`));
+  // app.get("/*", (_req, res) => res.sendFile(`${__dirname}/client/index.html`));
   // 处理cookie 持久化登录的中间件
   app.use(cookieParser(process.env.SECRET));
   const server = new ApolloServer({

@@ -97,9 +97,6 @@ export const typeDefs = gql`
         price: Int!
         numOfGuests: Int!
     }
-    # 登录登出功能返回值都是一个用户实体
-    # 如果一个操作是有"副作用的" 例如登录需要将信息写入数据库，那么铁定是一个Mutation，或者
-    # 可以理解为mutation 不是幂等的请求
     type Mutation {
         logIn(input: LogInInput): Viewer!
         logOut: Viewer!
@@ -108,6 +105,4 @@ export const typeDefs = gql`
         hostListing(input: HostListingInput!): Listing!
         createBooking(input: CreateBookingInput!): Booking!
     }
-
-    # ----
 `;

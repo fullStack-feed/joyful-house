@@ -25,8 +25,9 @@ const logInViaGoogle = async (
   if (!user) {
     throw new Error("谷歌登录失败");
   }
-  console.log(`谷歌认证成功，获取到用户数据为：`);
-  console.log(user)
+  console.log(`谷歌认证成功，开始提取需要的google用户信息`);
+
+  // --- 提取google账号中的有用信息，不必care ---
   const userNamesList = user.names && user.names.length ? user.names : null;
   const userPhotosList = user.photos && user.photos.length ? user.photos : null;
   const userEmailsList =
@@ -35,7 +36,6 @@ const logInViaGoogle = async (
       : null;
   // User Display Name
   const userName = userNamesList ? userNamesList[0].displayName : null;
-
   // User Id
   const userId =
     userNamesList &&
@@ -43,19 +43,18 @@ const logInViaGoogle = async (
     userNamesList[0].metadata.source
       ? userNamesList[0].metadata.source.id
       : null;
-
   // User Avatar
   const userAvatar =
     userPhotosList && userPhotosList[0].url ? userPhotosList[0].url : null;
-
   // User Email
   const userEmail =
     userEmailsList && userEmailsList[0].value ? userEmailsList[0].value : null;
-
   if (!userId || !userName || !userAvatar || !userEmail) {
     throw new Error("谷歌用户数据出错");
   }
-  // 从数据库中获取用户信息
+  // --- google账号数据输入处理完毕 ---
+
+  // 从数据库中获取用户信息，如果已经存在则更新用户数据。
   const updateRes = await db.users.findOneAndUpdate(
     { _id: userId },
     {
@@ -68,10 +67,9 @@ const logInViaGoogle = async (
     },
     { returnOriginal: false }
   );
-  let viewer = updateRes.value;
-  // 如果没有用户信息，则向数据库中存入用户信息
+  let viewer = updateRes.value;  
   if (!viewer) {
-    console.log(`开始向数据库存入数据`);
+    console.log(`用户首次登录，需要向数据库存入该用户`);
     const insertResult = await db.users.insertOne({
       _id: userId,
       token,
@@ -82,11 +80,10 @@ const logInViaGoogle = async (
       bookings: [],
       listings: [],
     });
-    console.log(`存入数据成功`);
+    console.log(`存入用户数据成功`);
     viewer = insertResult.ops[0];
   }
-  console.log(`开始写入cookie`)
-  // 返回viewer前，将cookie 写入并返回给前端
+  console.log(`开始向客户端写入cookie`)  
   res.cookie("viewer", userId, {
     ...cookieOptions,
     maxAge: 365 * 24 * 60 * 60 * 1000,
@@ -114,25 +111,18 @@ const logInViaCookie = async (
 };
 export const viewerResolvers: IResolvers = {
   Query: {
+    /**
+     * 为OAuth登录提供 Google登录地址
+     */
     authUrl: (): string => {
       try {
         return Google.authUrl;
       } catch (error) {
-        throw new Error(`获取Google的authUrl出现错误${error}`);
+        throw new Error(`获取Google authUrl 出现错误${error}`);
       }
     },
   },
   Mutation: {
-    /**
-     *
-     * Where the viewer signs-in with the Google authentication url and consent screen.
-     * Where the viewer signs-in with their cookie session.
-     *
-     * 现在实现的功能：
-     * - Authenticate with Google OAuth.
-     * - Either update or insert the viewer in the database.
-     * - And return the viewer and viewer details for the client to receive.
-     */
     logIn: async (
       _root: undefined,
       { input }: LogInArgs,
@@ -141,12 +131,18 @@ export const viewerResolvers: IResolvers = {
       try {
         // 获取用户用于登录的code
         const code = input ? input.code : null;
-        console.log(`从客户端传递过来的参数用于授权的code为: ${code}`);
-        // TODO: CSRF 攻击
-        const token = crypto.randomBytes(16).toString("hex");
-
-        // 如果本次登录没有携带code，要么是刷新页面，要么是二次登录，走cookie持久化登录
-
+        console.log(`登录授权码为: ${code}`);        
+        const token = crypto.randomBytes(16).toString("hex");  
+        console.log(`每次生成的token为:${token}`)      
+        /**
+         * 如果本次登录没有携带code，发生行为可能是如下之一：
+         * 
+         * - F5刷新页面，前端再次发起LogIn mutation
+         * 
+         * - 用户登录过后一段时间再次访问该网站
+         * 
+         * 将进行 cookie持久化登录 认证
+         */        
         const viewer: User | undefined = code
           ? await logInViaGoogle(code, token, db, res)
           : await logInViaCookie(token, db, req, res);
@@ -172,7 +168,7 @@ export const viewerResolvers: IResolvers = {
       try {
         // 用户注销时，手动清理cookie
         res.clearCookie("viewer", cookieOptions);
-        return { didRequest: false };
+        return { didRequest: true };
       } catch (error) {
         throw new Error(`注销失败: ${error}`);
       }

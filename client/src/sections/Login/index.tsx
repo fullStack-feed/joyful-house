@@ -22,10 +22,25 @@ const { Text, Title } = Typography;
 interface Props {
   setViewer: (viewer: Viewer) => void;
 }
+
+/**
+ * OAuth 登录流程总结：
+ * 
+ * - 获取 google 登录OAuth的url地址（向GraphQL中查询OAuthUrl）
+ * 
+ * - 写入 window.local.href后页面会自动跳转到 Google账号登录界面
+ * 
+ * - 当 google 登录成功后会重定向到 login页面 并携带 code码
+ * 
+ * - 触发 LogIn mutation，并携带 code码 
+ * 
+ * - 当后端成功登录后，前端验证用户数据正确性后 既可跳转至用户界面
+ * 
+ */
+
 export const Login = ({ setViewer }: Props) => {
   // 和useContext 一样，client就是那个消费者
-  const client = useApolloClient();
-  //PUZZ: 解构语法和ts的类型定义语法会冲突吗？
+  const client = useApolloClient();  
   const [
     logIn,
     { data: logInData, loading: logInLoading, error: logInError },
@@ -34,9 +49,9 @@ export const Login = ({ setViewer }: Props) => {
       if (data && data.logIn && data.logIn.token) {
         setViewer(data.logIn);
         sessionStorage.setItem('token',data.logIn.token)
-        console.log(`登录成功，返回的数据用户数据为：`);
+        console.log(`登录成功，返回的数据用户数据为:`);
         console.log(data)
-        displaySuccessNotification("成功登录，欢迎到来");
+        displaySuccessNotification("成功登录，欢迎你的到来");
       }
     },
     onError:() => {
@@ -65,15 +80,16 @@ export const Login = ({ setViewer }: Props) => {
       });
       window.location.href = data.authUrl;
     } catch (error) {
+      console.log(`google 账号登录失败，发生在AuthUrl：${error}`);      
       displayErrorMessage(
-        "Sorry! We weren't able to log you in. Please try again later!"
+        "抱歉，现在不能为您提供登录服务，查找AuthUrl时发生错误"
       );
     }
   };
   if (logInLoading) {
     return (
       <Content className="log-in">
-        <Spin size="large" tip="Logging you in..." />
+        <Spin size="large" tip="正在登录，请稍后！" />
       </Content>
     );
   }
@@ -82,7 +98,7 @@ export const Login = ({ setViewer }: Props) => {
     return <Redirect to={`/user/${viewerId}`} />;
   }
   const logInErrorBannerElement = logInError ? (
-    <ErrorBanner description="Sorry! We weren't able to log you in. Please try again later!" />
+    <ErrorBanner description="抱歉， 稍后再试" />
   ) : null;
   return (
     <Content className="log-in">
@@ -96,9 +112,9 @@ export const Login = ({ setViewer }: Props) => {
             </span>
           </Title>
           <Title level={3} className="log-in-card__intro-title">
-            Log in to TinyHouse!
+            欢迎登录 joyful-house
           </Title>
-          <Text>Sign in with Google to start booking available rentals!</Text>
+          <Text>成功登录google账号后就可以开始创建您的订单</Text>
         </div>
         {/* 登录按钮 */}
         <button
@@ -111,13 +127,12 @@ export const Login = ({ setViewer }: Props) => {
             className="log-in-card__google-button-logo"
           />
           <span className="log-in-card__google-button-text">
-            Sign in with Google
+            Sign in Google
           </span>
         </button>
         {/* 底部文本 */}
         <Text type="secondary">
-          Note: By signing in, you'll be redirected to the Google consent form
-          to sign in with your Google account.
+          提示: Google 账号登录成功后，将会带您进入关于您的首页中！
         </Text>
       </Card>
     </Content>
