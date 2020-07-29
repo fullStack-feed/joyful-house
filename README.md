@@ -6,7 +6,7 @@ TypeScipt + React + React-Router + React-hooks + React Apollo
 
 ### back-end
 
-GraphQL + Node.js + MongoDB + Express
+MongoDB + Node.js + Express + GraphQL
 
 ## overview
 
@@ -52,9 +52,7 @@ GraphQL + Node.js + MongoDB + Express
 
 ![登录](./doc/assets/tinyhouse-login.png)
 
-当用户尝试使用Google登录进行登录时，系统会提示他们提供其Google帐户信息，并在成功后会被允许进入登录状态的TinyHouse应用程序。
-
-![登录流](./doc/assets/tinyhouse-login-flow.png)
+当用户尝试使用Google登录进行登录时，系统会提示他们提供其Google帐户信息，并在成功后会被允许进入登录状态。
 
 ### 搜索功能
 
@@ -82,13 +80,13 @@ GraphQL + Node.js + MongoDB + Express
 
 ![支付界面](doc/assets/tinyhouse-confirm-booking.png)
 
+TODO: 订单功能
+
 ### 连接 Stripe
 
 如果用户有兴趣在 app 中托管和/或创建 House，他们首先需要连接其 Stripe帐户(测试直接跳过)，这将使他们能够从其他用户处接收付款。用户将在用户页面的“用户个人资料”中连接其Stripe帐户。
 
 ![](./doc/assets/tinyhouse-connect-stripe.png)
-
-![](./doc/assets/tinyhouse-connect-stripe-flow.png)
 
 当用户尝试连接其Stripe帐户时，系统将提示他们提供其Stripe帐户信息，并在成功后将重定向到TinyHouse应用程序。
 

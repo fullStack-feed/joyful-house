@@ -1,5 +1,5 @@
 {
-  "name": "tinyhouse-server",
+  "name": "joyful-server",
   "version": "0.1.0",
   "dependencies": {
     "@googlemaps/google-maps-services-js": "^3.1.4",

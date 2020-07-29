@@ -39,7 +39,6 @@ export const userResolvers: IResolvers = {
     income: (user: User): number | null => {
       return user.authorized ? user.income : null;
     },
-    // PUZZ: ！分页逻辑
     bookings: async (
       user: User,
       {limit, page}: UserBookingArgs,
