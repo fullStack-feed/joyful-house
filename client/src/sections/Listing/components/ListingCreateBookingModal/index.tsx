@@ -153,7 +153,7 @@ export const ListingCreateBookingModal =
             </Text>
 
           <Text>
-          注意：mock的数据中不存在真实的Stripe，只能订阅真实用户发布的House！（可以自己开两个账号测试或者搜索：苏鹏宇）
+          注意：mock的数据中不存在真实的Stripe，只能订阅真实用户发布的House！（可以自己开两个账号测试）
             </Text>
         </div>
       </Modal>
