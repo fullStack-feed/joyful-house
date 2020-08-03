@@ -22,35 +22,39 @@ interface Props {
 }
 
 const stripeAuthUrl = `https://connect.stripe.com/oauth/authorize?response_type=code&client_id=${process.env.REACT_APP_S_CLIENT_ID}&scope=read_write`;
+
 export const UserProfile = ({user, viewer, viewerIsUser, setViewer,handleUserRefetch}: Props) => {
+  
+  // 发起断开Stripe的Mutation
   const [disconnectStripe, {loading}] = useMutation<DisconnectStripeData>(
     DISCONNECT_STRIPE,
     {
       onCompleted: data => {
         if (data && data.disconnectStripe) {
           displaySuccessNotification(
-            "You've successfully disconnected from Stripe!",
-            "You'll have to reconnect with Stripe to continue to create listings."
+            "成功断开Stripe连接！",
+            "您必须重新登录Stripe后才能发布出租信息！"
           );
           handleUserRefetch();
         }
       }, onError: () => {
         displayErrorMessage(
-          "Sorry! We weren't able to disconnect you from Stripe. Please try again later!"
+          "抱歉！断开Stripe失败！"
         );
       }
     }
   );
+  // 修改当前url，重定向到登录stripe的url中
   const redirectToStripe = () => {
     window.location.href = stripeAuthUrl;
   };
   const additionalDetails = user.hasWallet ? (
     <Fragment>
       <Paragraph>
-        <Tag color="green">Stripe Registered</Tag>
+        <Tag color="green">Stripe 已登录</Tag>
       </Paragraph>
       <Paragraph>
-        Income Earned:{" "}
+        收入：{" "}
         <Text strong>{user.income ? formatListingPrice(user.income) : `$0`}</Text>
       </Paragraph>
       <Button  type="primary" className="user-profile__details-cta"
@@ -60,15 +64,14 @@ export const UserProfile = ({user, viewer, viewerIsUser, setViewer,handleUserRef
         关闭你的 Stripe
       </Button>
       <Paragraph type="secondary">
-        By disconnecting, you won't be able to receive{" "}
-        <Text strong>any further payments</Text>. This will prevent users from booking
-        listings that you might have already created.
+        断开连接后您将不会再{" "}
+        <Text strong>收到任何房间订阅</Text>这样可以防止用户预订您可能已经创建的列表
       </Paragraph>
     </Fragment>
   ) : (
     <Fragment>
       <Paragraph>
-        Interested in becoming a TinyHouse host? Register with your Stripe account!
+      有兴趣成为joyful-house房东吗？用您的Stripe帐户登录既可！
       </Paragraph>
       <Button
         type="primary"
@@ -78,7 +81,7 @@ export const UserProfile = ({user, viewer, viewerIsUser, setViewer,handleUserRef
         登录你的 Stripe
       </Button>
       <Paragraph type="secondary">
-        TinyHouse uses{" "}
+      joyful-house 使用{" "}
         <a
           href="https://stripe.com/en-US/connect"
           target="_blank"
@@ -86,7 +89,7 @@ export const UserProfile = ({user, viewer, viewerIsUser, setViewer,handleUserRef
         >
           Stripe
         </a>{" "}
-        to help transfer your earnings in a secure and truster manner.
+        以安全可靠的方式帮助您进行金额交易！
       </Paragraph>
     </Fragment>
   );
@@ -94,7 +97,7 @@ export const UserProfile = ({user, viewer, viewerIsUser, setViewer,handleUserRef
     <Fragment>
       <Divider />
       <div className="user-profile__details">
-        <Title level={4}>Additional Details</Title>
+        <Title level={4}>额外细节</Title>
         {additionalDetails}
       </div>
     </Fragment>
@@ -107,12 +110,12 @@ export const UserProfile = ({user, viewer, viewerIsUser, setViewer,handleUserRef
         </div>
         <Divider/>
         <div className="user-profile__details">
-          <Title level={4}>Details</Title>
+          <Title level={4}>主要信息</Title>
           <Paragraph>
-            Name: <Text strong>{user.name}</Text>
+            用户名称: <Text strong>{user.name}</Text>
           </Paragraph>
           <Paragraph>
-            Contact: <Text strong>{user.contact}</Text>
+            联系方式: <Text strong>{user.contact}</Text>
           </Paragraph>
         </div>
         {additionalDetailsSection}

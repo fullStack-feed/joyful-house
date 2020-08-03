@@ -24,8 +24,8 @@ export const Stripe = ({viewer, setViewer, history}: Props & RouteComponentProps
       if (data && data.connectStripe) {
         setViewer({...viewer, hasWallet: data.connectStripe.hasWallet});
         displaySuccessNotification(
-          "You've successfully connected your Stripe Account!",
-          "You can now begin to create listings in the Host page."
+          "成功登录 Stripe !",
+          "您现在拥有出租house的权利！"
         );
       }
     }
@@ -45,13 +45,12 @@ export const Stripe = ({viewer, setViewer, history}: Props & RouteComponentProps
     }
   }, [history]);
   if (data && data.connectStripe) {
-    console.log('1')
     return <Redirect to={`/user/${viewer.id}`}/>;
   }
   if (loading) {
     return (
       <Content className="stripe">
-        <Spin size="large" tip="Connecting your Stripe account..."/>
+        <Spin size="large" tip="正在为您连接，稍等片刻..."/>
       </Content>
     );
   }

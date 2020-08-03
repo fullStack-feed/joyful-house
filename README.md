@@ -8,6 +8,15 @@ TypeScipt + React + React-Router + React-hooks + React Apollo
 
 MongoDB + Node.js + Express + GraphQL
 
+## Online
+
+[joyful-house-app](https://joyful-house-application.herokuapp.com/)
+
+说明：
+
+- 由于免费部署在heroku 平台上，每隔1个小时项目会进行睡眠，此时访问会唤醒heroku，**需要等待半分钟左右（再次刷新即可）**
+- 项目中用到了Google OAuth，所以需要各位**挂梯子**才能登陆
+
 ## overview
 
 #### Google OAuth 2.0 和 cookie 持久化
@@ -32,7 +41,6 @@ MongoDB + Node.js + Express + GraphQL
 
 - 借助 Heroku 将 app 编译并部署到sass平台中, 详细内容看这里：[Heroku](https://id.heroku.com/login)
 
-
 ## Features
 
 这是app中所有主要功能的摘要，一个用户能够：
@@ -42,7 +50,7 @@ MongoDB + Node.js + Express + GraphQL
 - 查看具体 House 的信息
 - 查看用户（自己）一段时间内订阅过的 House 信息
 - 连接其Stripe帐户后可以创建 House（即成为House的房东）并可以接收其他用户的订房付款行为
-- 创建（即托管）自己的House 
+- 创建（即托管）自己的House
 - 查看我创建的 House 列表，及对别人对我的 House 进行的预订记录
 - 查看其他用户创建的House的列表
 
@@ -112,7 +120,6 @@ TODO: 订单功能
 
 ![](./doc/assets/tinyhouse-other-user-listings.png)
 
-
 ## Walkthrough of Code
 
 ### API-Driven Approach
@@ -139,7 +146,6 @@ server/
 ```
 
 #### src
-
 
 ```shell
 server/
@@ -169,11 +175,12 @@ server/
 
 #### temp
 
-在服务器项目的`temp/`目录中建立`seed()`函数，以使用模拟的数据填充到MongoDB数据库中，这些数据将在构建应用程序时起到辅助开发的作用。 
+在服务器项目的`temp/`目录中建立`seed()`函数，以使用模拟的数据填充到MongoDB数据库中，这些数据将在构建应用程序时起到辅助开发的作用。
 
 我们还将有一个`clear()`函数，以便在需要时用于清除数据库。
 
 `server/`中的其他所有内容都涉及项目的环境设置,该环境设置包括但不限于:
+
 - 定义环境配置变量
 - ESLint配置
 - TypeScript配置
@@ -194,7 +201,6 @@ client/
   schema.json
   tsconfig.json
 ```
-
 
 #### `src/`
 
@@ -226,11 +232,14 @@ client/
 - 一个自动生成的`schema.json`文件，代表我们的GraphQL API，并使用[Apollo CLI](https://github.com/apollographql/apollo-tooling#apollo-cli)工具生成。
 - `.env`文件，其中介绍了打算保留在React项目中的环境变量。
 
-
 ## Code Patterns
-
 
 ## TODO
 
+- 订单部分
 
+- Code Patterns  
 
+- env 文件 使得能够运行代码
+
+- 提纲

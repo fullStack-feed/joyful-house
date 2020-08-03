@@ -23,19 +23,28 @@ interface MatchParams {
   id: string
 }
 
-
 const PAGE_LIMIT = 3;
 
+/**
+ * 
+ */
 interface Props {
   viewer: Viewer
 }
-
+/**
+ * todo：
+ * 
+ * - 拉取数据进行展示内容
+ * 
+ * - 日期选择校验
+ * 
+ */
 export const Listing = ({match, viewer}: Props & RouteComponentProps<MatchParams>) => {
   const [checkInDate, setCheckInDate] = useState<Moment | null>(null);
   const [checkOutDate, setCheckOutDate] = useState<Moment | null>(null);
   const [bookingsPage, setBookingsPage] = useState(1);
   const [modalVisible, setModalVisible] = useState(false);
-//  发起GraphQL查询
+//  发起GraphQL查询当前房间信息
   const {data, error, loading,refetch} = useQuery<ListingData, ListingVariables>(LISTING, {
     variables: {
       id: match.params.id,
@@ -57,8 +66,7 @@ export const Listing = ({match, viewer}: Props & RouteComponentProps<MatchParams
         <PageSkeleton/>
       </Content>
     );
-  }
-  // 判断是否存在数据，以便确定 ListingDetails 和 ListingBookings 组件的渲染；
+  } 
   const listing = data ? data.listing : null;
   const listingBookings = listing ? listing.bookings : null;
   const clearBookingData = () => {
@@ -66,6 +74,7 @@ export const Listing = ({match, viewer}: Props & RouteComponentProps<MatchParams
     setCheckInDate(null);
     setCheckOutDate(null);
   };
+  // 刷新当前页面
   const handleListingRefetch = async () => {
     await refetch();
   };

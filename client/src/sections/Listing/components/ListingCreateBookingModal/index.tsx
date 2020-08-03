@@ -15,13 +15,17 @@ import {
 } from "../../../../lib/utils";
 
 interface Props {
+  // 订单详情
   id: string;
   price: number;
-  modalVisible: boolean;
   checkInDate: Moment;
   checkOutDate: Moment;
+  // 控制订单显示
+  modalVisible: boolean;
   setModalVisible: (modalVisible: boolean) => void;
+  // 成功后清除日期
   clearBookingData: () => void;
+  // 刷新页面
   handleListingRefetch: () => Promise<void>;
 }
 
@@ -39,29 +43,38 @@ export const ListingCreateBookingModal =
      handleListingRefetch,
      stripe
    }: Props & ReactStripeElements.InjectedStripeProps) => {
+    //  向服务器发出创建订单Mutation
     const [createBooking, { loading }] = useMutation<
       CreateBookingData,
       CreateBookingVariables
       >(CREATE_BOOKING, {
+      /**
+       * 成功后：
+       * - 清除页面当前订阅的日期
+       * - 弹出提示：订阅成功
+       * - 刷新当前页面
+       */
       onCompleted: () => {
         clearBookingData();
         displaySuccessNotification(
-          "You've successfully booked the listing!",
-          "Booking history can always be found in your User page."
+          "您已经成功订阅房间！",
+          "订阅历史记录可以在您的个人信息中查阅！"
         );
         handleListingRefetch();
       },
       onError: () => {
         displayErrorMessage(
-          "Sorry! We weren't able to successfully book the listing. Please try again later!"
+          "抱歉，现在不能为您创建订单，请稍后再试！"
         );
       }
     });
+    // 计算日期差（需要补1）并计算金额
     const daysBooked = checkOutDate.diff(checkInDate, "days") + 1;
     const listingPrice = price * daysBooked;
+
     const handleCreateBooking = async () => {
       if (!stripe) {
-        return displayErrorMessage("Sorry! We weren't able to connect with Stripe.");
+        return displayErrorMessage("抱歉，您的stripe出现了一点问题！");
       }
 
       let {token: stripeToken, error} = await stripe.createToken();
@@ -97,28 +110,27 @@ export const ListingCreateBookingModal =
               <Icon type="key"></Icon>
             </Title>
             <Title level={3} className="listing-boooking-modal__intro-title">
-              Book your trip
+              检查您的订单
             </Title>
             <Paragraph>
-              Enter your payment information to book the listing from the dates between{" "}
+              检查您订阅的日期是否为{" "}
               <Text mark strong>
                 {moment(checkInDate).format("MMMM Do YYYY")}
               </Text>{" "}
-              and{" "}
+              至{" "}
               <Text mark strong>
                 {moment(checkOutDate).format("MMMM Do YYYY")}
-              </Text>
-              , inclusive.
+              </Text>              
             </Paragraph>
           </div>
           <Divider/>
           <div className="listing-booking-modal__charge-summary">
             <Paragraph>
-              {formatListingPrice(price, false)} x {daysBooked} days ={" "}
+              {formatListingPrice(price, false)} x {daysBooked} 天 ={" "}
               <Text strong>{formatListingPrice(listingPrice, false)}</Text>
             </Paragraph>
             <Paragraph className="listing-booking-modal__charge-summary-total">
-              Total = <Text mark>{formatListingPrice(listingPrice, false)}</Text>
+              总价 = <Text mark>{formatListingPrice(listingPrice, false)}</Text>
             </Paragraph>
           </div>
           <Divider/>
@@ -132,9 +144,17 @@ export const ListingCreateBookingModal =
               loading={loading}
               onClick={handleCreateBooking}
             >
-              Book
+              支付
             </Button>
+
           </div>
+          <Text>
+            测试卡号:4242 4242 4242 4242，合法的日期及CVC即可！
+            </Text>
+
+          <Text>
+          注意：mock的数据中不存在真实的Stripe，只能订阅真实用户发布的House！（可以自己开两个账号测试或者搜索：苏鹏宇）
+            </Text>
         </div>
       </Modal>
     );

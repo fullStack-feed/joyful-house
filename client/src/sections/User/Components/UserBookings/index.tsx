@@ -62,11 +62,10 @@ export const UserBookings = ({
   const userBookingsElement = userBookingsList ? (
     <div className="user-bookings">
       <Title level={4} className="user-bookings__title">
-        Bookings
+        订阅历史
       </Title>
       <Paragraph className="user-bookings__description">
-        This section highlights the bookings you've made, and the check-in/check-out dates
-        associated with said bookings.
+      您可以查阅已完成的预订，以及与所述预订相关的入住/退房日期
       </Paragraph>
       {userBookingsList}
     </div>

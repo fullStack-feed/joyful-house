@@ -30,7 +30,7 @@ export const UserListings =
           lg: 4
         }}
         dataSource={result}
-        locale={{emptyText: "User doesn't have any listings yet!"}}
+        locale={{emptyText: "用户没有任何发布的房产！"}}
         pagination={{
           position: "top",
           current: listingsPage,
@@ -51,11 +51,10 @@ export const UserListings =
     return (
       <div className="user-listings">
         <Title level={4} className="user-listings__title">
-          Listings
+          发布
         </Title>
         <Paragraph className="user-listings__description">
-          This section highlights the listings this user currently hosts and has
-          made available for bookings.
+        展示了该用户当前托管并可供预订的House
         </Paragraph>
         {userListingsList}
       </div>

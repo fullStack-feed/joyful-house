@@ -59,6 +59,7 @@ const App = () => {
    *
    * https://www.apollographql.com/docs/react/data/mutations/
    * */
+
   const [logIn, {error}] = useMutation<LogInData, LogInVariables>(LOG_IN, {
     onCompleted: (data) => {
       if (data && data.logIn) {
@@ -72,11 +73,6 @@ const App = () => {
       }
     },
   });
-  /**
-   * 这里使用ref是为了能够缓存logIn？
-   *
-   *  关于useRef 和 useEffect 配合使用还是不太理解
-   * */
   const logInRef = useRef(logIn);
   useEffect(() => {
     logInRef.current();
@@ -86,15 +82,14 @@ const App = () => {
       <Layout className="app-skeleton">
         <AppHeaderSkeleton/>
         <div className="app-skeleton__spin-section">
-          <Spin size="large" tip="Launching Tinyhouse"/>
+          <Spin size="large" tip="正在加载！"/>
         </div>
       </Layout>
     );
   }
   const logInErrorBannerElement = error ? (
-    <ErrorBanner description="We weren't able to verify if you were logged in. Please try again later!"/>
-  ) : null;
-  // PUZZ: 不明白react-router的render props 模式
+    <ErrorBanner description="无法验证您已经登录，请再次手动登录！"/>
+  ) : null;  
   return (
     <StripeProvider apiKey={process.env.REACT_APP_S_PUBLISHABLE_KEY as string}>
       <Router>
@@ -116,7 +111,9 @@ const App = () => {
               path="/stripe"
               render={props => <Stripe {...props} viewer={viewer} setViewer={setViewer}/>}
             />
-            {/* 动态路由，根据不同用户id显示不同Listing页面 */}
+            {/* 
+              订单页面，需要使用Spripe HOC来传递支付控件
+            */}
             <Route
               exact
               path="/listing/:id"
@@ -125,8 +122,7 @@ const App = () => {
                   <Listing {...props} viewer={viewer} />
                 </Elements>
               )}
-            />
-            {/* ? 表示location字段可有可无 */}
+            />            
             <Route exact path="/listings/:location?" component={Listings}/>
             <Route
               exact
@@ -142,7 +138,8 @@ const App = () => {
   );
 };
 
-//ApolloProvider 就是一个React Context，将client从根组件向下一路传递！
+// ApolloProvider 就是一个React Context，将client从根组件向下一路传递！
+// 可以理解成redux
 render(
   <ApolloProvider client={client}>
     <App/>
@@ -150,7 +147,4 @@ render(
   document.getElementById("root")
 );
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();

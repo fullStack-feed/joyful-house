@@ -9,10 +9,6 @@ import {displayErrorMessage} from "../../lib/utils";
 
 const {Search} = Input
 const {Header} = Layout;
-
-
-// TODO: 如果当前是在首页，则不展示搜索框，同时两个搜索框出现多膈应
-
 /**
  *
  * 之所以需要setViewer，是因为需要处理登出逻辑
@@ -25,18 +21,14 @@ interface Props {
 
 export const AppHeader = withRouter(({viewer, setViewer, location, history}: Props & RouteComponentProps) => {
     const [search, setSearch] = useState("");
-    const [searchView, setSearchView] = useState(false)
+    const [searchView, setSearchView] = useState(true)
     useEffect(() => {
       const {pathname} = location;
       const pathnameSubStrings = pathname.split('/')
-      // 当 location 发生改变后，需要判断是否需要展示顶部搜索框
       if (!pathname.includes("/listings")) {
         setSearch("");
-        setSearchView(false)
         return;
-      } else {
-        setSearchView(true)
-      }
+      }      
       if (pathname.includes("/listings") && pathnameSubStrings.length === 3) {
         setSearch(pathnameSubStrings[2]);
         return;
@@ -47,7 +39,7 @@ export const AppHeader = withRouter(({viewer, setViewer, location, history}: Pro
       if (trimmedValue) {
         history.push(`/listings/${trimmedValue}`);
       } else {
-        displayErrorMessage("Please enter a valid search!");
+        displayErrorMessage("请输入一个有效的搜索内容");
       }
     };
     return (

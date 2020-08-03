@@ -44,9 +44,10 @@ export const User =
     const handleUserRefetch = async () => {
       await refetch();
     };
+    // 捕获连接stripe_error出错的情况
     const stripeError = new URL(window.location.href).searchParams.get("stripe_error");
     const stripeErrorBanner = stripeError ? (
-      <ErrorBanner description="We had an issue connecting with Stripe. Please try again soon."/>
+      <ErrorBanner description="连接您的Stripe出现一些问题，请稍后再试！"/>
     ) : null;
     if (loading) {
       return (
@@ -59,7 +60,7 @@ export const User =
     if (error) {
       return (
         <Content className="user">
-          <ErrorBanner description="This user may not exist or we've encountered an error. Please try again soon."/>
+          <ErrorBanner description="该用户可能不存在或者Stripe出现一些问题，请稍后再试！"/>
           <PageSkeleton/>
         </Content>
       );

@@ -39,6 +39,13 @@ const beforeImageUpload = (file: File) => {
   }
   return fileIsValidImage && fileIsValidSize;
 };
+/**
+ * 
+ * 对图片进行Base64编码，成功后调用 callback并将编码后的结果传递到result中
+ * 
+ * @param img 需要编码的图片
+ * @param callback 编码成功后的回调
+ */
 const getBase64Value = (
   img: File | Blob,
   callback: (imageBase64Value: string) => void
@@ -50,8 +57,9 @@ const getBase64Value = (
     callback(reader.result as string);
   };
 }
-const Host = ({viewer, form}: Props & FormComponentProps) => {
 
+const Host = ({viewer, form}: Props & FormComponentProps) => {
+  // 调用GraphQL mutation 发布房子
   const [hostListing, {loading, data}] = useMutation<HostListingData,
     HostListingVariables>(HOST_LISTING, {
     onCompleted: () => {
@@ -65,10 +73,17 @@ const Host = ({viewer, form}: Props & FormComponentProps) => {
     }
   });
 
-
   const [imageLoading, setImageLoading] = useState(false);
   const [imageBase64Value, setImageBase64Value] = useState<string | null>(null);
   const {getFieldDecorator} = form;
+  /**
+   * - 上传文件时 跟进当前状态：uploading 以及 done 
+   *    * 根据不同状态 刷新imageLoading，以便展示加载状态
+   * 
+   * - 将图片进行base64 编码后，存入到imageBase64Value中
+   * 
+   * @param info 图片内容
+   */
   const handleImageUpload = (info: UploadChangeParam) => {
     const {file} = info;
     if (file.status === "uploading") {
@@ -91,7 +106,7 @@ const Host = ({viewer, form}: Props & FormComponentProps) => {
         displayErrorMessage("请检查您填写的表单数据");
         return;
       }
-      console.log(values)
+      // 组装数据 调用Mutation 发布
       const fullAddress = `${values.address}, ${values.city}, ${values.state}, ${values.postalCode}`;
       const input = {
         ...values,
@@ -121,10 +136,12 @@ const Host = ({viewer, form}: Props & FormComponentProps) => {
       </Content>
     );
   }
+  // 创建成功后跳转到listing界面
+  // 此处的data 是mutation的结果
   if (data && data.hostListing) {
     return <Redirect to={`/listing/${data.hostListing.id}`} />;
   }
-
+  // 验证用户状态
   if (!viewer.id || !viewer.hasWallet) {
     return (
       <Content className="host-content">
@@ -140,8 +157,17 @@ const Host = ({viewer, form}: Props & FormComponentProps) => {
       </Content>
     );
   }
+
   return (
     <Content className="host-content">
+      {/* 
+      
+      antd form组件需要校验字段时：
+
+      需要通过 getFieldDecorator 函数将校验规则 以及渲染组件传递进去
+      
+      
+      */}
       <Form layout="vertical" onSubmit={handleHostListing}>
         <div className="host__form-header">
           <Title level={3} className="host__form-title">
